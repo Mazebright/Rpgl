@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RPGL</title>
+
+  <!-- Load Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Load your modular scripts -->
+  <script src="supabaseInit.js"></script>
+  <script src="auth.js"></script>
+  <script src="character.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="energy.js"></script>
+  <script defer src="main.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    .hidden { display: none; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    button { margin: 5px; padding: 5px 10px; }
+    select, input { margin: 5px; }
+    .nav-button { margin-right: 10px; cursor: pointer; font-weight: bold; }
+    ul { list-style-type: square; }
+  </style>
+</head>
+
+<body>
+
+<!-- Auth Screen -->
+<div id="auth">
+  <h1>Login or Sign Up</h1>
+  <input id="email" type="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Password"><br><br>
+  <button onclick="signUp()">Sign Up</button>
+  <button onclick="signIn()">Log In</button>
+</div>
+
+<!-- Character Creation -->
+<div id="creation" class="hidden">
+  <h2>Create Your Character</h2>
+  <label>Name: <input type="text" id="charName"></label><br><br>
+  <label>Race:
+    <select id="charRace">
+      <option value="Human">Human</option>
+      <option value="Elf">Elf</option>
+      <option value="Dwarf">Dwarf</option>
+    </select>
+  </label><br><br>
+
+  <h3>Pick 3 Different Attributes to Boost</h3>
+  <select id="boost1"></select>
+  <select id="boost2"></select>
+  <select id="boost3"></select><br>
+  <small><b>Warning:</b> Boost choices are permanent!</small><br><br>
+
+  <button onclick="confirmCharacter()">Create Character</button>
+</div>
+
+<!-- Game Dashboard -->
+<div id="dashboard" class="hidden">
+  <h1>RPGL Dashboard</h1>
+  <div>
+    <span class="nav-button" onclick="switchTab('info')">Player Info</span>
+    <span class="nav-button" onclick="switchTab('skills')">Skills</span>
+    <span class="nav-button" onclick="switchTab('inventory')">Inventory</span>
+    <span class="nav-button" onclick="switchTab('actions')">Actions</span>
+  </div>
+
+  <div id="info" class="tab active"></div>
+  <div id="skills" class="tab"></div>
+  <div id="inventory" class="tab"></div>
+  <div id="actions" class="tab"></div>
+</div>
+
+</body>
+</html>
