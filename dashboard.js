@@ -1,5 +1,3 @@
-// XP logic moved to xpTables.js
-
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(div => div.classList.remove('active'));
   document.getElementById(tab).classList.add('active');
@@ -16,7 +14,6 @@ function loadInfo() {
   Object.keys(player.attributes).forEach(attr => {
     const xp = player.attributes[attr].xp;
     const level = getAttributeLevel(xp);
-    const nextXP = xpForNextAttributeLevel(level);
     if (player.attributes[attr].level !== level) {
       player.attributes[attr].level = level;
       updated = true;
@@ -37,8 +34,11 @@ function loadInfo() {
     const data = player.attributes[attr];
     const level = data.level;
     const xp = data.xp;
-    const nextXP = xpForNextAttributeLevel(level);
-    html += `<tr><td>${attr}</td><td>${level}</td><td>${xp}/${nextXP} XP</td></tr>`;
+    const xpStart = attributeXPTable[level];
+    const xpNext = attributeXPTable[level + 1];
+    const xpInLevel = xp - xpStart;
+    const xpNeeded = xpNext - xpStart;
+    html += `<tr><td>${attr}</td><td>${level}</td><td>${xpInLevel}/${xpNeeded} XP</td></tr>`;
   }
 
   html += `</tbody></table><br>
@@ -54,13 +54,16 @@ function loadSkills() {
                (player.attributes[attrs[1]].xp * 0.35) +
                (player.attributes[attrs[2]].xp * 0.20);
     const level = getSkillLevel(xp);
-    const nextXP = xpForNextSkillLevel(level);
+    const xpStart = skillXPTable[level];
+    const xpNext = skillXPTable[level + 1];
+    const xpInLevel = Math.floor(xp - xpStart);
+    const xpNeeded = xpNext - xpStart;
     const oldLevel = player.skills[skill] || 0;
     if (level > oldLevel) {
       player.skills[skill] = level;
       player.activityLog.push(`Skill leveled up: ${skill} is now Level ${level}!`);
     }
-    return { name: skill, level, xp: Math.floor(xp), nextXP };
+    return { name: skill, level, xpInLevel, xpNeeded };
   });
 
   skillData.sort((a, b) => a.name.localeCompare(b.name));
@@ -69,7 +72,7 @@ function loadSkills() {
               <thead><tr><th>Skill</th><th>Level</th><th>XP</th></tr></thead><tbody>`;
 
   skillData.forEach(skill => {
-    html += `<tr><td>${skill.name}</td><td>${skill.level}</td><td>${skill.xp}/${skill.nextXP} XP</td></tr>`;
+    html += `<tr><td>${skill.name}</td><td>${skill.level}</td><td>${skill.xpInLevel}/${skill.xpNeeded} XP</td></tr>`;
   });
 
   html += '</tbody></table>';
